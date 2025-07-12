@@ -1,0 +1,369 @@
+@import "tailwindcss";
+
+@theme {
+  --radius: 0.625rem;
+  --font-family-sans: "Inter", "system-ui", "sans-serif";
+  --spacing-18: 4.5rem;
+  --spacing-22: 5.5rem;
+  --color-background: oklch(1 0 0);
+  --color-foreground: oklch(0.13 0.028 261.692);
+  --color-card: oklch(1 0 0);
+  --color-card-foreground: oklch(0.13 0.028 261.692);
+  --color-popover: oklch(1 0 0);
+  --color-popover-foreground: oklch(0.13 0.028 261.692);
+  --color-primary: oklch(0.21 0.034 264.665);
+  --color-primary-foreground: oklch(0.985 0.002 247.839);
+  --color-secondary: oklch(0.967 0.003 264.542);
+  --color-secondary-foreground: oklch(0.21 0.034 264.665);
+  --color-muted: oklch(0.967 0.003 264.542);
+  --color-muted-foreground: oklch(0.551 0.027 264.364);
+  --color-accent: oklch(0.967 0.003 264.542);
+  --color-accent-foreground: oklch(0.21 0.034 264.665);
+  --color-destructive: oklch(0.577 0.245 27.325);
+  --color-destructive-foreground: oklch(0.985 0.002 247.839);
+  --color-border: oklch(0.928 0.006 264.531);
+  --color-input: oklch(0.928 0.006 264.531);
+  --color-ring: oklch(0.707 0.022 261.325);
+  --color-chart-1: oklch(0.646 0.222 41.116);
+  --color-chart-2: oklch(0.6 0.118 184.704);
+  --color-chart-3: oklch(0.398 0.07 227.392);
+  --color-chart-4: oklch(0.828 0.189 84.429);
+  --color-chart-5: oklch(0.769 0.188 70.08);
+  --color-sidebar: oklch(0.985 0.002 247.839);
+  --color-sidebar-foreground: oklch(0.13 0.028 261.692);
+  --color-sidebar-primary: oklch(0.21 0.034 264.665);
+  --color-sidebar-primary-foreground: oklch(0.985 0.002 247.839);
+  --color-sidebar-accent: oklch(0.967 0.003 264.542);
+  --color-sidebar-accent-foreground: oklch(0.21 0.034 264.665);
+  --color-sidebar-border: oklch(0.928 0.006 264.531);
+  --color-sidebar-ring: oklch(0.707 0.022 261.325);
+}
+
+@media (prefers-color-scheme: dark) {
+  @theme {
+    --color-background: oklch(0.13 0.028 261.692);
+    --color-foreground: oklch(0.985 0.002 247.839);
+    --color-card: oklch(0.21 0.034 264.665);
+    --color-card-foreground: oklch(0.985 0.002 247.839);
+    --color-popover: oklch(0.21 0.034 264.665);
+    --color-popover-foreground: oklch(0.985 0.002 247.839);
+    --color-primary: oklch(0.928 0.006 264.531);
+    --color-primary-foreground: oklch(0.21 0.034 264.665);
+    --color-secondary: oklch(0.278 0.033 256.848);
+    --color-secondary-foreground: oklch(0.985 0.002 247.839);
+    --color-muted: oklch(0.278 0.033 256.848);
+    --color-muted-foreground: oklch(0.707 0.022 261.325);
+    --color-accent: oklch(0.278 0.033 256.848);
+    --color-accent-foreground: oklch(0.985 0.002 247.839);
+    --color-destructive: oklch(0.704 0.191 22.216);
+    --color-destructive-foreground: oklch(0.985 0.002 247.839);
+    --color-border: oklch(1 0 0 / 10%);
+    --color-input: oklch(1 0 0 / 15%);
+    --color-ring: oklch(0.551 0.027 264.364);
+    --color-chart-1: oklch(0.488 0.243 264.376);
+    --color-chart-2: oklch(0.696 0.17 162.48);
+    --color-chart-3: oklch(0.769 0.188 70.08);
+    --color-chart-4: oklch(0.627 0.265 303.9);
+    --color-chart-5: oklch(0.645 0.246 16.439);
+    --color-sidebar: oklch(0.21 0.034 264.665);
+    --color-sidebar-foreground: oklch(0.985 0.002 247.839);
+    --color-sidebar-primary: oklch(0.488 0.243 264.376);
+    --color-sidebar-primary-foreground: oklch(0.985 0.002 247.839);
+    --color-sidebar-accent: oklch(0.278 0.033 256.848);
+    --color-sidebar-accent-foreground: oklch(0.985 0.002 247.839);
+    --color-sidebar-border: oklch(1 0 0 / 10%);
+    --color-sidebar-ring: oklch(0.551 0.027 264.364);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border/20 outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+  
+  /* Hotel-specific base styles */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight;
+  }
+  
+  h1 {
+    @apply text-3xl;
+  }
+  
+  h2 {
+    @apply text-2xl;
+  }
+  
+  h3 {
+    @apply text-xl;
+  }
+  
+  /* Smooth transitions for interactive elements */
+  button, a, [role="button"] {
+    @apply transition-all duration-200 ease-in-out;
+  }
+  
+  /* Enhanced focus styles */
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-ring;
+  }
+}
+
+@layer components {
+  /* Navigation items */
+  .hotel-nav-item {
+    @apply flex items-center gap-3 px-3 py-2.5 text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent transition-all duration-200 ease-in-out;
+  }
+  
+  .hotel-nav-item.active {
+    @apply bg-sidebar-accent text-sidebar-accent-foreground font-medium;
+  }
+
+  /* Animation classes */
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+  }
+  
+  .animate-slide-up {
+    animation: slideUp 0.3s ease-out;
+  }
+  
+  .animate-slide-down {
+    animation: slideDown 0.3s ease-out;
+  }
+  
+  .animate-scale-in {
+    animation: scaleIn 0.2s ease-out;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes slideDown {
+  from { transform: translateY(-10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* Calendar Styling Overrides - Force override library styles */
+.rbc-calendar {
+  background-color: white !important;
+  color: #1f2937 !important;
+}
+
+/* Calendar Header */
+.rbc-header {
+  background-color: #f9fafb !important;
+  color: #1f2937 !important;
+  font-weight: 500 !important;
+  padding: 12px 8px !important;
+  border-bottom: 1px solid #e5e7eb !important;
+  font-size: 14px !important;
+}
+
+/* Calendar Month View */
+.rbc-month-view {
+  background-color: white !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+}
+
+/* Date Cells */
+.rbc-date-cell {
+  color: #6b7280 !important;
+  font-size: 14px !important;
+}
+
+.rbc-date-cell > a {
+  color: #6b7280 !important;
+}
+
+.rbc-date-cell > a:hover {
+  color: #1f2937 !important;
+}
+
+/* Day Cells */
+.rbc-day-bg {
+  background-color: white !important;
+  border-right: 1px solid #f3f4f6 !important;
+  border-bottom: 1px solid #f3f4f6 !important;
+}
+
+.rbc-day-bg:hover {
+  background-color: #f9fafb !important;
+}
+
+/* Off-range (previous/next month dates) */
+.rbc-off-range-bg {
+  background-color: #f8fafc !important;
+}
+
+.rbc-off-range {
+  color: #9ca3af !important;
+}
+
+/* Today */
+.rbc-today {
+  background-color: #dbeafe !important;
+  border: 1px solid #93c5fd !important;
+}
+
+/* Calendar Toolbar */
+.rbc-toolbar {
+  margin-bottom: 16px !important;
+  padding: 0 !important;
+}
+
+.rbc-toolbar button {
+  padding: 6px 12px !important;
+  font-size: 14px !important;
+  border: 1px solid #e5e7eb !important;
+  background-color: white !important;
+  color: #1f2937 !important;
+  border-radius: 6px !important;
+  transition: all 0.2s !important;
+}
+
+.rbc-toolbar button:hover {
+  background-color: #f9fafb !important;
+}
+
+.rbc-toolbar button:active,
+.rbc-toolbar button.rbc-active {
+  background-color: #3b82f6 !important;
+  color: white !important;
+  border-color: #3b82f6 !important;
+}
+
+.rbc-toolbar-label {
+  font-size: 18px !important;
+  font-weight: 600 !important;
+  color: #1f2937 !important;
+}
+
+/* Calendar Events */
+.rbc-event {
+  color: white !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+}
+
+.rbc-event-label {
+  font-size: 12px !important;
+}
+
+/* Week and Day View Styles */
+.rbc-time-view {
+  border: 1px solid #e5e7eb !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+}
+
+.rbc-time-header {
+  border-bottom: 1px solid #e5e7eb !important;
+}
+
+.rbc-time-content {
+  border-left: 1px solid #e5e7eb !important;
+}
+
+.rbc-time-gutter {
+  background-color: #f9fafb !important;
+  border-right: 1px solid #e5e7eb !important;
+}
+
+.rbc-timeslot-group {
+  border-bottom: 1px solid #f3f4f6 !important;
+}
+
+.rbc-time-slot {
+  border-top: 1px solid #f8fafc !important;
+}
+
+/* Agenda View */
+.rbc-agenda-view {
+  border: 1px solid #e5e7eb !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+}
+
+.rbc-agenda-view table {
+  width: 100% !important;
+}
+
+.rbc-agenda-view tbody > tr > td {
+  padding: 8px 12px !important;
+  border-bottom: 1px solid #f3f4f6 !important;
+  font-size: 14px !important;
+}
+
+.rbc-agenda-date-cell {
+  background-color: #f9fafb !important;
+  font-weight: 500 !important;
+}
+
+.rbc-agenda-time-cell {
+  color: #6b7280 !important;
+}
+
+/* Popup */
+.rbc-overlay {
+  background-color: white !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 8px !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
+  padding: 12px !important;
+}
+
+.rbc-overlay-header {
+  font-weight: 600 !important;
+  color: #1f2937 !important;
+  padding-bottom: 8px !important;
+  border-bottom: 1px solid #e5e7eb !important;
+  margin-bottom: 8px !important;
+}
+
+/* Selected slot styling */
+.rbc-selected {
+  background-color: #dbeafe !important;
+  border: 1px solid #93c5fd !important;
+}
+
+/* Make sure text is readable in all themes */
+.rbc-month-view .rbc-date-cell,
+.rbc-month-view .rbc-date-cell a,
+.rbc-time-view .rbc-label {
+  color: #1f2937 !important;
+}
+
+/* Row styling for month view */
+.rbc-row {
+  border-bottom: 1px solid #f3f4f6 !important;
+}
+
+/* Month row background */
+.rbc-month-row {
+  background-color: white !important;
+}
+
+/* Better contrast for current day in month view */
+.rbc-current {
+  color: #1f2937 !important;
+  font-weight: 600 !important;
+}
