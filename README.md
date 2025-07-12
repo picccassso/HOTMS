@@ -82,4 +82,4 @@ HOTMS is built with the solo operator in mind:
 
 ## License
 
-This project is proprietary software designed for a specific hotel operation.
+This project is open-source.
