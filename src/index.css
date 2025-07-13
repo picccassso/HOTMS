@@ -160,68 +160,102 @@
   to { transform: scale(1); opacity: 1; }
 }
 
-/* Calendar Styling Overrides - Force override library styles */
+/* Calendar Dark Theme - Preserve Library Border Logic */
 .rbc-calendar {
-  background-color: white !important;
-  color: #1f2937 !important;
+  background-color: hsl(var(--color-card)) !important;
+  color: hsl(var(--color-foreground)) !important;
 }
 
-/* Calendar Header */
+/* Calendar Header - Colors Only, No Border Changes */
 .rbc-header {
-  background-color: #f9fafb !important;
-  color: #1f2937 !important;
+  background-color: hsl(var(--color-muted)) !important;
+  color: hsl(var(--color-foreground)) !important;
   font-weight: 500 !important;
-  padding: 12px 8px !important;
-  border-bottom: 1px solid #e5e7eb !important;
   font-size: 14px !important;
 }
 
 /* Calendar Month View */
 .rbc-month-view {
-  background-color: white !important;
-  border: 1px solid #e5e7eb !important;
+  background-color: hsl(var(--color-card)) !important;
+  border: 1px solid hsl(var(--color-border)) !important;
   border-radius: 8px !important;
   overflow: hidden !important;
 }
 
 /* Date Cells */
 .rbc-date-cell {
-  color: #6b7280 !important;
+  color: hsl(var(--color-muted-foreground)) !important;
   font-size: 14px !important;
 }
 
 .rbc-date-cell > a {
-  color: #6b7280 !important;
+  color: hsl(var(--color-muted-foreground)) !important;
 }
 
 .rbc-date-cell > a:hover {
-  color: #1f2937 !important;
+  color: hsl(var(--color-foreground)) !important;
 }
 
-/* Day Cells */
+/* Day Cells - Background Only, Preserve Borders */
 .rbc-day-bg {
-  background-color: white !important;
-  border-right: 1px solid #f3f4f6 !important;
-  border-bottom: 1px solid #f3f4f6 !important;
+  background-color: hsl(var(--color-card)) !important;
 }
 
 .rbc-day-bg:hover {
-  background-color: #f9fafb !important;
+  background-color: hsl(var(--color-muted)) !important;
 }
 
 /* Off-range (previous/next month dates) */
 .rbc-off-range-bg {
-  background-color: #f8fafc !important;
+  background-color: hsl(var(--color-muted)) !important;
 }
 
 .rbc-off-range {
-  color: #9ca3af !important;
+  color: hsl(var(--color-muted-foreground) / 0.6) !important;
 }
 
 /* Today */
 .rbc-today {
-  background-color: #dbeafe !important;
-  border: 1px solid #93c5fd !important;
+  background-color: hsl(var(--color-primary) / 0.2) !important;
+}
+
+/* Calendar Toolbar - No Border Changes */
+.rbc-toolbar button {
+  padding: 6px 12px !important;
+  font-size: 14px !important;
+  background-color: hsl(var(--color-card)) !important;
+  color: hsl(var(--color-foreground)) !important;
+  border-radius: 6px !important;
+  transition: all 0.2s !important;
+}
+
+.rbc-toolbar button:hover {
+  background-color: hsl(var(--color-muted)) !important;
+}
+
+.rbc-toolbar button:active,
+.rbc-toolbar button.rbc-active {
+  background-color: hsl(var(--color-primary)) !important;
+  color: hsl(var(--color-primary-foreground)) !important;
+}
+
+.rbc-toolbar-label {
+  font-size: 18px !important;
+  font-weight: 600 !important;
+  color: hsl(var(--color-foreground)) !important;
+}
+
+/* Calendar Events */
+.rbc-event {
+  color: white !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+}
+
+/* Today */
+.rbc-today {
+  background-color: hsl(var(--color-primary) / 0.2) !important;
+  border: 1px solid hsl(var(--color-primary)) !important;
 }
 
 /* Calendar Toolbar */
@@ -233,28 +267,28 @@
 .rbc-toolbar button {
   padding: 6px 12px !important;
   font-size: 14px !important;
-  border: 1px solid #e5e7eb !important;
-  background-color: white !important;
-  color: #1f2937 !important;
+  border: 1px solid hsl(var(--color-border)) !important;
+  background-color: hsl(var(--color-card)) !important;
+  color: hsl(var(--color-foreground)) !important;
   border-radius: 6px !important;
   transition: all 0.2s !important;
 }
 
 .rbc-toolbar button:hover {
-  background-color: #f9fafb !important;
+  background-color: hsl(var(--color-muted)) !important;
 }
 
 .rbc-toolbar button:active,
 .rbc-toolbar button.rbc-active {
-  background-color: #3b82f6 !important;
-  color: white !important;
-  border-color: #3b82f6 !important;
+  background-color: hsl(var(--color-primary)) !important;
+  color: hsl(var(--color-primary-foreground)) !important;
+  border-color: hsl(var(--color-primary)) !important;
 }
 
 .rbc-toolbar-label {
   font-size: 18px !important;
   font-weight: 600 !important;
-  color: #1f2937 !important;
+  color: hsl(var(--color-foreground)) !important;
 }
 
 /* Calendar Events */
@@ -270,35 +304,35 @@
 
 /* Week and Day View Styles */
 .rbc-time-view {
-  border: 1px solid #e5e7eb !important;
+  border: 1px solid hsl(var(--color-border)) !important;
   border-radius: 8px !important;
   overflow: hidden !important;
 }
 
 .rbc-time-header {
-  border-bottom: 1px solid #e5e7eb !important;
+  border-bottom: 1px solid hsl(var(--color-border)) !important;
 }
 
 .rbc-time-content {
-  border-left: 1px solid #e5e7eb !important;
+  border-left: 1px solid hsl(var(--color-border)) !important;
 }
 
 .rbc-time-gutter {
-  background-color: #f9fafb !important;
-  border-right: 1px solid #e5e7eb !important;
+  background-color: hsl(var(--color-muted)) !important;
+  border-right: 1px solid hsl(var(--color-border)) !important;
 }
 
 .rbc-timeslot-group {
-  border-bottom: 1px solid #f3f4f6 !important;
+  border-bottom: 1px solid hsl(var(--color-border)) !important;
 }
 
 .rbc-time-slot {
-  border-top: 1px solid #f8fafc !important;
+  border-top: 1px solid hsl(var(--color-border)) !important;
 }
 
 /* Agenda View */
 .rbc-agenda-view {
-  border: 1px solid #e5e7eb !important;
+  border: 1px solid hsl(var(--color-border)) !important;
   border-radius: 8px !important;
   overflow: hidden !important;
 }
@@ -309,23 +343,23 @@
 
 .rbc-agenda-view tbody > tr > td {
   padding: 8px 12px !important;
-  border-bottom: 1px solid #f3f4f6 !important;
+  border-bottom: 1px solid hsl(var(--color-border)) !important;
   font-size: 14px !important;
 }
 
 .rbc-agenda-date-cell {
-  background-color: #f9fafb !important;
+  background-color: hsl(var(--color-muted)) !important;
   font-weight: 500 !important;
 }
 
 .rbc-agenda-time-cell {
-  color: #6b7280 !important;
+  color: hsl(var(--color-muted-foreground)) !important;
 }
 
 /* Popup */
 .rbc-overlay {
-  background-color: white !important;
-  border: 1px solid #e5e7eb !important;
+  background-color: hsl(var(--color-popover)) !important;
+  border: 1px solid hsl(var(--color-border)) !important;
   border-radius: 8px !important;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
   padding: 12px !important;
@@ -333,37 +367,44 @@
 
 .rbc-overlay-header {
   font-weight: 600 !important;
-  color: #1f2937 !important;
+  color: hsl(var(--color-foreground)) !important;
   padding-bottom: 8px !important;
-  border-bottom: 1px solid #e5e7eb !important;
+  border-bottom: 1px solid hsl(var(--color-border)) !important;
   margin-bottom: 8px !important;
 }
 
 /* Selected slot styling */
 .rbc-selected {
-  background-color: #dbeafe !important;
-  border: 1px solid #93c5fd !important;
+  background-color: hsl(var(--color-primary) / 0.2) !important;
+  border: 1px solid hsl(var(--color-primary)) !important;
 }
 
 /* Make sure text is readable in all themes */
 .rbc-month-view .rbc-date-cell,
 .rbc-month-view .rbc-date-cell a,
 .rbc-time-view .rbc-label {
-  color: #1f2937 !important;
+  color: hsl(var(--color-foreground)) !important;
 }
 
 /* Row styling for month view */
 .rbc-row {
-  border-bottom: 1px solid #f3f4f6 !important;
+  border-bottom: 1px solid hsl(var(--color-border)) !important;
+  box-sizing: border-box !important;
+}
+
+/* Remove border from last row to avoid double borders */
+.rbc-month-view .rbc-row:last-child {
+  border-bottom: none !important;
 }
 
 /* Month row background */
 .rbc-month-row {
-  background-color: white !important;
+  background-color: hsl(var(--color-card)) !important;
+  box-sizing: border-box !important;
 }
 
 /* Better contrast for current day in month view */
 .rbc-current {
-  color: #1f2937 !important;
+  color: hsl(var(--color-foreground)) !important;
   font-weight: 600 !important;
 }

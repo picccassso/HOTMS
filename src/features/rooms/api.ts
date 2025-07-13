@@ -57,3 +57,15 @@ export const getActiveRooms = async (): Promise<Room[]> => {
   if (error) throw error;
   return data || [];
 };
+
+export const checkRoomHasReservations = async (roomId: string): Promise<boolean> => {
+  const { data, error } = await supabase
+    .from('reservations')
+    .select('id')
+    .eq('room_id', roomId)
+    .not('status', 'in', '(checked_out,cancelled)')
+    .limit(1);
+  
+  if (error) throw error;
+  return (data || []).length > 0;
+};

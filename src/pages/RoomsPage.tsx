@@ -41,6 +41,7 @@ export default function RoomsPage() {
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [editingRoom, setEditingRoom] = useState<Room | null>(null);
   const [deletingRoom, setDeletingRoom] = useState<Room | null>(null);
+  const [roomWithReservations, setRoomWithReservations] = useState<Room | null>(null);
 
   const columns: ColumnDef<Room>[] = [
     {
@@ -134,8 +135,20 @@ export default function RoomsPage() {
 
   const handleDeleteRoom = async () => {
     if (deletingRoom) {
-      await removeRoom(deletingRoom.id);
-      setDeletingRoom(null);
+      try {
+        await removeRoom(deletingRoom.id);
+        setDeletingRoom(null);
+      } catch (error) {
+        if (error instanceof Error && error.message === 'ROOM_HAS_RESERVATIONS') {
+          // Close delete dialog and show reservations warning
+          setDeletingRoom(null);
+          setRoomWithReservations(deletingRoom);
+        } else {
+          // Show generic error
+          console.error('Failed to delete room:', error);
+          alert('Failed to delete room. Please try again.');
+        }
+      }
     }
   };
 
@@ -247,6 +260,36 @@ export default function RoomsPage() {
             </Button>
             <Button variant="destructive" onClick={handleDeleteRoom}>
               Delete
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Room Has Reservations Dialog */}
+      <Dialog open={!!roomWithReservations} onOpenChange={(open) => !open && setRoomWithReservations(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Cannot Delete Room</DialogTitle>
+            <DialogDescription>
+              Room {roomWithReservations?.room_number} cannot be deleted because it has active reservations.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4">
+            <p className="text-sm text-muted-foreground mb-4">
+              To remove this room, you can:
+            </p>
+            <ul className="list-disc list-inside space-y-2 text-sm text-muted-foreground">
+              <li>Complete current reservations (check guests out), then delete the room</li>
+              <li>Cancel pending/confirmed reservations, then delete the room</li>
+              <li>Mark the room as inactive instead of deleting it</li>
+            </ul>
+            <p className="text-xs text-muted-foreground mt-4">
+              Note: Rooms with only checked-out or cancelled reservations can be deleted.
+            </p>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setRoomWithReservations(null)}>
+              OK
             </Button>
           </DialogFooter>
         </DialogContent>

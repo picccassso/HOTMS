@@ -72,7 +72,7 @@ export const NewReservationDialog = ({
     }
   };
 
-  const handleCreateGuest = async (guestData: any) => {
+  const handleCreateGuest = async (guestData: { full_name: string; email: string; phone_number?: string; address?: string }) => {
     try {
       const newGuest = await addGuest(guestData);
       form.setValue("guest_id", newGuest.id);

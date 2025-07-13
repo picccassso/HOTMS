@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+  <defs>
+    <linearGradient id="hotelGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#3B82F6"/>
+      <stop offset="100%" stop-color="#1E40AF"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Building base -->
+  <rect x="6" y="12" width="20" height="16" fill="url(#hotelGradient)" rx="1"/>
+  
+  <!-- Roof -->
+  <polygon points="4,12 16,4 28,12" fill="#1E40AF"/>
+  
+  <!-- Windows -->
+  <rect x="9" y="15" width="2.5" height="2.5" fill="#E5E7EB" rx="0.5"/>
+  <rect x="12.5" y="15" width="2.5" height="2.5" fill="#E5E7EB" rx="0.5"/>
+  <rect x="17" y="15" width="2.5" height="2.5" fill="#E5E7EB" rx="0.5"/>
+  <rect x="20.5" y="15" width="2.5" height="2.5" fill="#E5E7EB" rx="0.5"/>
+  
+  <rect x="9" y="19" width="2.5" height="2.5" fill="#E5E7EB" rx="0.5"/>
+  <rect x="12.5" y="19" width="2.5" height="2.5" fill="#E5E7EB" rx="0.5"/>
+  <rect x="17" y="19" width="2.5" height="2.5" fill="#E5E7EB" rx="0.5"/>
+  <rect x="20.5" y="19" width="2.5" height="2.5" fill="#E5E7EB" rx="0.5"/>
+  
+  <!-- Door -->
+  <rect x="14" y="23" width="4" height="5" fill="#374151" rx="0.5"/>
+  <circle cx="16.5" cy="25.5" r="0.3" fill="#E5E7EB"/>
+  
+  <!-- Small flag/sign -->
+  <rect x="24" y="8" width="4" height="2" fill="#EF4444" rx="0.3"/>
+  <rect x="24" y="8" width="1" height="6" fill="#6B7280"/>
+</svg>

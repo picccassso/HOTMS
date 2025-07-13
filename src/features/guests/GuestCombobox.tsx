@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Check, ChevronsUpDown, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useGuests } from "./useGuests";
-import type { Guest } from "@/types/schemas";
 import { Button } from "@/components/ui/button";
 import {
   Command,

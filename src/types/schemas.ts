@@ -8,7 +8,7 @@ const emailSchema = z.string().email('Invalid email format').min(1, 'Email is re
 
 // Phone number validation (basic international format)
 const phoneSchema = z.string()
-  .regex(/^[\+]?[\d\s\-\(\)]{7,15}$/, 'Invalid phone number format')
+  .regex(/^[+]?[\d\s\-()]{7,15}$/, 'Invalid phone number format')
   .optional();
 
 // Monetary amount validation
@@ -27,7 +27,7 @@ export const ownerProfileCreateSchema = z.object({
   full_name: z.string()
     .min(1, 'Full name is required')
     .max(100, 'Full name too long')
-    .regex(/^[a-zA-Z\s\-\.\']+$/, 'Name can only contain letters, spaces, hyphens, periods, and apostrophes')
+    .regex(/^[a-zA-Z\s\-.']+$/, 'Name can only contain letters, spaces, hyphens, periods, and apostrophes')
 });
 
 export const ownerProfileSchema = ownerProfileCreateSchema.extend({
@@ -54,7 +54,7 @@ export const guestCreateSchema = z.object({
   full_name: z.string()
     .min(1, 'Guest name is required')
     .max(100, 'Guest name too long')
-    .regex(/^[a-zA-Z\s\-\.\']+$/, 'Name can only contain letters, spaces, hyphens, periods, and apostrophes'),
+    .regex(/^[a-zA-Z\s\-.']+$/, 'Name can only contain letters, spaces, hyphens, periods, and apostrophes'),
   email: emailSchema,
   phone_number: phoneSchema,
   address: z.string()
@@ -74,7 +74,7 @@ export const roomCreateSchema = z.object({
   room_number: z.string()
     .min(1, 'Room number is required')
     .max(20, 'Room number too long')
-    .regex(/^[A-Za-z0-9\-]+$/, 'Room number can only contain letters, numbers, and hyphens'),
+    .regex(/^[A-Za-z0-9-]+$/, 'Room number can only contain letters, numbers, and hyphens'),
   room_type: z.string()
     .min(1, 'Room type is required')
     .max(50, 'Room type too long'),
@@ -107,7 +107,9 @@ export const reservationCreateSchema = z.object({
 
 export const reservationSchema = reservationCreateSchema.extend({
   id: uuidSchema,
-  created_at: timestampSchema
+  created_at: timestampSchema,
+  guest_id: uuidSchema.nullable(), // Allow null when guest is deleted
+  room_id: uuidSchema.nullable() // Allow null when room is deleted
 });
 
 export const reservationUpdateSchema = reservationCreateSchema.partial();
@@ -165,8 +167,8 @@ export type Room = z.infer<typeof roomSchema>;
 export type RoomUpdate = z.infer<typeof roomUpdateSchema>;
 export type ReservationCreate = z.infer<typeof reservationCreateSchema>;
 export type Reservation = z.infer<typeof reservationSchema> & {
-  guest?: Guest;
-  room?: Room;
+  guest?: Guest | null;
+  room?: Room | null;
 };
 export type ReservationUpdate = z.infer<typeof reservationUpdateSchema>;
 export type PaymentCreate = z.infer<typeof paymentCreateSchema>;

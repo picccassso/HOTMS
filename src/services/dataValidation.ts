@@ -1,6 +1,7 @@
 // Data Flow Validation: Ensures all data entering/leaving the system is validated
 // This file provides wrappers and hooks for consistent validation across the app
 
+import { z } from 'zod';
 import { validateData, validateDataSafe, ValidationError } from './validation';
 import * as schemas from '../types/schemas';
 
@@ -57,9 +58,9 @@ export const validateOutput = {
  * Generic form validation wrapper
  * Useful for React forms and user interfaces
  */
-export function createFormValidator<T>(schema: any) {
+export function createFormValidator<T>(schema: z.ZodSchema) {
   return (data: unknown) => {
-    const result = validateDataSafe(schema as any, data);
+    const result = validateDataSafe(schema, data);
     
     if (result.success) {
       return { isValid: true, data: result.data as T, errors: [] };
@@ -73,7 +74,7 @@ export function createFormValidator<T>(schema: any) {
  * Middleware function for API endpoints (when we build them)
  * Validates request data before processing
  */
-export function validateRequestData<T>(schema: any) {
+export function validateRequestData<T>(schema: z.ZodSchema) {
   return (data: unknown): T => {
     try {
       return validateData(schema, data);
@@ -108,7 +109,7 @@ export function sanitizeStringInput(input: string): string {
  */
 export function validateAndSanitizeText(input: unknown): string {
   if (typeof input !== 'string') {
-    throw new ValidationError(new Error('Input must be a string') as any);
+    throw new ValidationError(new Error('Input must be a string'));
   }
   
   const sanitized = sanitizeStringInput(input);
@@ -116,14 +117,14 @@ export function validateAndSanitizeText(input: unknown): string {
   // Check for potential SQL injection patterns
   const suspiciousPatterns = [
     /(\bunion\b|\bselect\b|\binsert\b|\bupdate\b|\bdelete\b|\bdrop\b)/gi,
-    /['";].*[-\-]/gi, // SQL comment patterns
+    /['";].*[--]/gi, // SQL comment patterns
     /\b(or|and)\s+\d+\s*=\s*\d+/gi // Basic injection patterns
   ];
   
   for (const pattern of suspiciousPatterns) {
     if (pattern.test(sanitized)) {
       console.warn('Potentially malicious input detected:', sanitized);
-      throw new ValidationError(new Error('Input contains suspicious patterns') as any);
+      throw new ValidationError(new Error('Input contains suspicious patterns'));
     }
   }
   

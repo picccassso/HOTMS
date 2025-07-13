@@ -9,7 +9,6 @@ import { createOwnerIfNoneExists } from '@/services/owner';
 import { Hotel, Building2, CheckCircle, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 
@@ -420,13 +419,14 @@ export default function SetupWizard() {
                   {roomsForm.watch('rooms').map((_, index) => (
                     <div key={index} className="border rounded-lg p-4 space-y-4">
                       <div className="flex items-center justify-between">
-                        <h3 className="font-medium">Room {index + 1}</h3>
+                        <h3 className="font-medium text-slate-900">Room {index + 1}</h3>
                         {roomsForm.watch('rooms').length > 1 && (
                           <Button
                             type="button"
                             variant="outline"
                             size="sm"
                             onClick={() => removeRoom(index)}
+                            className="text-slate-900 border-slate-300 hover:bg-slate-50"
                           >
                             Remove
                           </Button>
@@ -486,7 +486,7 @@ export default function SetupWizard() {
                     </div>
                   ))}
 
-                  <Button type="button" variant="outline" onClick={addRoom} className="w-full">
+                  <Button type="button" variant="outline" onClick={addRoom} className="w-full text-slate-900 border-slate-300 hover:bg-slate-50">
                     Add Another Room
                   </Button>
 

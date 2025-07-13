@@ -14,7 +14,6 @@ import {
 } from "@/components/ui/dialog";
 import {
   Form,
-  FormControl,
   FormField,
   FormItem,
   FormLabel,
@@ -62,7 +61,6 @@ export const MergeGuestsDialog = ({
   });
 
   const sourceGuest = targetGuestId === guest1.id ? guest2 : guest1;
-  const targetGuest = targetGuestId === guest1.id ? guest1 : guest2;
 
   const handleFieldChange = (field: keyof MergeFormData, value: string) => {
     form.setValue(field, value);

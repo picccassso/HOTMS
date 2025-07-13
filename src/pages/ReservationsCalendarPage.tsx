@@ -1,7 +1,7 @@
 import { useState, useCallback, useMemo } from 'react';
 import { Calendar, dateFnsLocalizer, Views } from 'react-big-calendar';
 import type { View } from 'react-big-calendar';
-import { format, parse, startOfWeek, getDay } from 'date-fns';
+import { format, parse, startOfWeek, getDay, startOfDay, addDays } from 'date-fns';
 import { enUS } from 'date-fns/locale';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { useReservations } from '@/features/reservations/useReservations';
@@ -12,6 +12,34 @@ import type { Reservation, ReservationCreate } from '@/types/schemas';
 // Setup the localizer for date-fns
 const locales = {
   'en-US': enUS,
+};
+
+// Custom view type for today-first week
+const TODAY_FIRST = 'today_first' as const;
+
+// Extended Views with our custom view
+const ExtendedViews = {
+  ...Views,
+  TODAY_FIRST,
+} as const;
+
+type ExtendedView = View | typeof TODAY_FIRST;
+
+// Create a custom localizer that can handle today-first week
+const createCustomLocalizer = (currentView: ExtendedView) => {
+  return dateFnsLocalizer({
+    format,
+    parse,
+    startOfWeek: (date: Date) => {
+      if (currentView === TODAY_FIRST) {
+        // For today-first view, start the week from the current date
+        return startOfDay(date);
+      }
+      return startOfWeek(date);
+    },
+    getDay,
+    locales,
+  });
 };
 
 const localizer = dateFnsLocalizer({
@@ -72,18 +100,32 @@ const eventStyleGetter = (event: CalendarEvent) => {
 
 export default function ReservationsCalendarPage() {
   const { reservations, loading, error, addReservation, refetch } = useReservations();
-  const [view, setView] = useState<View>(Views.MONTH);
+  const [view, setView] = useState<ExtendedView>(Views.MONTH);
   const [date, setDate] = useState(new Date());
   const [showNewReservationDialog, setShowNewReservationDialog] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState<{ start: Date; end: Date } | null>(null);
   const [showReservationDetails, setShowReservationDetails] = useState(false);
   const [selectedReservation, setSelectedReservation] = useState<Reservation | null>(null);
 
+  // Calculate the effective date for calendar display
+  const effectiveDate = useMemo(() => {
+    if (view === TODAY_FIRST) {
+      // For today-first view, ensure we're showing a week that starts with the current date
+      return startOfDay(date);
+    }
+    return date;
+  }, [view, date]);
+
+  // Get the appropriate localizer for the current view
+  const currentLocalizer = useMemo(() => {
+    return view === TODAY_FIRST ? createCustomLocalizer(view) : localizer;
+  }, [view]);
+
   // Convert reservations to calendar events
   const events: CalendarEvent[] = useMemo(() => {
     return reservations.map((reservation) => ({
       id: reservation.id,
-      title: `${reservation.guest?.full_name || 'Unknown Guest'} - Room ${reservation.room?.room_number || 'N/A'}`,
+      title: `${reservation.guest?.full_name || 'Guest Deleted'} - Room ${reservation.room?.room_number || 'Room Deleted'}`,
       start: new Date(reservation.start_date),
       end: new Date(reservation.end_date),
       resource: reservation,
@@ -107,11 +149,31 @@ export default function ReservationsCalendarPage() {
   );
 
   const handleNavigate = useCallback((newDate: Date) => {
-    setDate(newDate);
-  }, []);
+    if (view === TODAY_FIRST) {
+      // For today-first view, navigation moves in 7-day increments
+      const today = startOfDay(new Date());
+      const currentStart = startOfDay(date);
+      const daysDiff = Math.round((newDate.getTime() - currentStart.getTime()) / (1000 * 60 * 60 * 24));
+      
+      // Move by weeks (7 days) from current position
+      if (daysDiff > 0) {
+        setDate(addDays(currentStart, 7)); // Next week
+      } else if (daysDiff < 0) {
+        setDate(addDays(currentStart, -7)); // Previous week
+      } else {
+        setDate(today); // Today button
+      }
+    } else {
+      setDate(newDate);
+    }
+  }, [view, date]);
 
-  const handleViewChange = useCallback((newView: View) => {
+  const handleViewChange = useCallback((newView: ExtendedView) => {
     setView(newView);
+    if (newView === TODAY_FIRST) {
+      // When switching to today-first view, start from today
+      setDate(startOfDay(new Date()));
+    }
   }, []);
 
   const handleCreateReservation = useCallback(async (reservationData: ReservationCreate) => {
@@ -182,16 +244,19 @@ export default function ReservationsCalendarPage() {
       </div>
 
       {/* Calendar */}
-      <div className="bg-card border border-border rounded-lg shadow-lg p-0 overflow-hidden transition-shadow duration-200 hover:shadow-xl">
+      <div className="bg-card border border-border rounded-lg shadow-lg p-5 overflow-hidden transition-shadow duration-200 hover:shadow-xl">
         <Calendar
-          localizer={localizer}
+          localizer={currentLocalizer}
           events={events}
           startAccessor="start"
           endAccessor="end"
-          style={{ height: 600, padding: '20px' }}
-          view={view}
-          views={[Views.MONTH, Views.WEEK, Views.DAY, Views.AGENDA]}
-          date={date}
+          style={{ height: 600 }}
+          view={view === TODAY_FIRST ? Views.WEEK : view}
+          views={[Views.MONTH, Views.WEEK, Views.DAY, TODAY_FIRST, Views.AGENDA]}
+          messages={{
+            [TODAY_FIRST]: 'Today First',
+          }}
+          date={effectiveDate}
           onNavigate={handleNavigate}
           onView={handleViewChange}
           onSelectSlot={handleSelectSlot}
@@ -199,9 +264,24 @@ export default function ReservationsCalendarPage() {
           selectable={true}
           eventPropGetter={eventStyleGetter}
           popup={true}
+          // Custom date range for today-first view
+          {...(view === TODAY_FIRST && {
+            formats: {
+              dayHeaderFormat: (date: Date, culture?: string, localizer?: any) => {
+                const today = startOfDay(new Date());
+                const daysDiff = Math.round((startOfDay(date).getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+                
+                if (daysDiff === 0) return 'Today';
+                if (daysDiff === 1) return 'Tomorrow';
+                if (daysDiff === -1) return 'Yesterday';
+                
+                return format(date, 'EEE dd', { locale: enUS });
+              }
+            }
+          })}
           tooltipAccessor={(event: CalendarEvent) => {
             const reservation = event.resource;
-            return `${reservation.guest?.full_name} - Room ${reservation.room?.room_number}\nStatus: ${reservation.status}\nDates: ${format(new Date(reservation.start_date), 'MMM dd')} - ${format(new Date(reservation.end_date), 'MMM dd')}`;
+            return `${reservation.guest?.full_name || 'Guest Deleted'} - Room ${reservation.room?.room_number || 'Room Deleted'}\nStatus: ${reservation.status}\nDates: ${format(new Date(reservation.start_date), 'MMM dd')} - ${format(new Date(reservation.end_date), 'MMM dd')}`;
           }}
           dayPropGetter={(date) => {
             // Highlight weekends with a subtle background

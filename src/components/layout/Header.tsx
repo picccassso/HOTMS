@@ -15,6 +15,7 @@ import {
 export default function Header() {
   const navigate = useNavigate();
   const [hotelName, setHotelName] = useState<string>('Hotel');
+  const [userEmail, setUserEmail] = useState<string>('');
 
   useEffect(() => {
     const fetchHotelName = async () => {
@@ -28,7 +29,17 @@ export default function Header() {
         setHotelName(data.name);
       }
     };
+
+    const fetchCurrentUser = async () => {
+      const { data: { user }, error } = await supabase.auth.getUser();
+      
+      if (!error && user) {
+        setUserEmail(user.email || '');
+      }
+    };
+
     fetchHotelName();
+    fetchCurrentUser();
   }, []);
 
   const handleLogout = async () => {
@@ -64,7 +75,7 @@ export default function Header() {
           <DropdownMenuContent align="end" className="w-56">
             <div className="px-2 py-1.5">
               <p className="text-sm text-muted-foreground">Signed in as</p>
-              <p className="text-sm font-medium">admin@grandhotel.com</p>
+              <p className="text-sm font-medium">{userEmail || 'Loading...'}</p>
             </div>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleLogout}>

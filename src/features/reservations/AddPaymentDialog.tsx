@@ -57,6 +57,7 @@ export const AddPaymentDialog = ({
       setIsSubmitting(true);
       // Remove confirmation from the data before submitting
       const { confirmation, ...paymentData } = data;
+      void confirmation; // Used for validation only
       await onSubmit(paymentData);
       form.reset();
       onOpenChange(false);
@@ -139,18 +140,19 @@ export const AddPaymentDialog = ({
               control={form.control}
               name="confirmation"
               render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 bg-amber-50 border-amber-200">
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-xl border p-4 bg-gradient-to-r from-blue-100 to-blue-200 border-blue-300 shadow-sm">
                   <FormControl>
                     <Checkbox
                       checked={field.value}
                       onCheckedChange={field.onChange}
+                      className="mt-1 h-5 w-5 border-2 border-blue-400 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600 data-[state=unchecked]:bg-white"
                     />
                   </FormControl>
                   <div className="space-y-1 leading-none">
-                    <FormLabel className="font-medium text-amber-800">
+                    <FormLabel className="font-semibold text-blue-900 cursor-pointer">
                       I confirm an external payment was received
                     </FormLabel>
-                    <p className="text-sm text-amber-700">
+                    <p className="text-sm text-blue-800 leading-relaxed">
                       This is required to log the payment and update the reservation status.
                     </p>
                     <FormMessage />

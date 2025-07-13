@@ -1,5 +1,5 @@
-import { useState, useEffect, useMemo } from 'react';
-import { format, isToday, isTomorrow, isYesterday } from 'date-fns';
+import { useMemo } from 'react';
+import { format, isToday } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
 import { 
   Users, 
@@ -14,7 +14,6 @@ import {
 import { useReservations } from '@/features/reservations/useReservations';
 import { useRooms } from '@/features/rooms/useRooms';
 import { useGuests } from '@/features/guests/useGuests';
-import type { Reservation } from '@/types/schemas';
 
 export default function DashboardPage() {
   const navigate = useNavigate();
@@ -198,9 +197,9 @@ export default function DashboardPage() {
               todaysData.arrivals.slice(0, 5).map((reservation) => (
                 <div key={reservation.id} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
                   <div>
-                    <p className="font-medium text-sm">{reservation.guest?.full_name}</p>
+                    <p className="font-medium text-sm">{reservation.guest?.full_name || 'Guest Deleted'}</p>
                     <p className="text-xs text-muted-foreground">
-                      Room {reservation.room?.room_number} • {reservation.room?.room_type}
+                      Room {reservation.room?.room_number || 'Room Deleted'} • {reservation.room?.room_type || 'N/A'}
                     </p>
                   </div>
                   <div className="text-right">
@@ -242,9 +241,9 @@ export default function DashboardPage() {
               todaysData.currentGuests.slice(0, 5).map((reservation) => (
                 <div key={reservation.id} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
                   <div>
-                    <p className="font-medium text-sm">{reservation.guest?.full_name}</p>
+                    <p className="font-medium text-sm">{reservation.guest?.full_name || 'Guest Deleted'}</p>
                     <p className="text-xs text-muted-foreground">
-                      Room {reservation.room?.room_number} • Until {format(new Date(reservation.end_date), 'MMM dd')}
+                      Room {reservation.room?.room_number || 'Room Deleted'} • Until {format(new Date(reservation.end_date), 'MMM dd')}
                     </p>
                   </div>
                   <div className="text-right">
@@ -282,9 +281,9 @@ export default function DashboardPage() {
               todaysData.departures.slice(0, 5).map((reservation) => (
                 <div key={reservation.id} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
                   <div>
-                    <p className="font-medium text-sm">{reservation.guest?.full_name}</p>
+                    <p className="font-medium text-sm">{reservation.guest?.full_name || 'Guest Deleted'}</p>
                     <p className="text-xs text-muted-foreground">
-                      Room {reservation.room?.room_number} • {reservation.room?.room_type}
+                      Room {reservation.room?.room_number || 'Room Deleted'} • {reservation.room?.room_type || 'N/A'}
                     </p>
                   </div>
                   <div className="text-right">

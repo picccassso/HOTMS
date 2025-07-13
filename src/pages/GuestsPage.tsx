@@ -43,6 +43,7 @@ export default function GuestsPage() {
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [editingGuest, setEditingGuest] = useState<Guest | null>(null);
   const [deletingGuest, setDeletingGuest] = useState<Guest | null>(null);
+  const [guestWithReservations, setGuestWithReservations] = useState<Guest | null>(null);
   const [selectedGuests, setSelectedGuests] = useState<Set<string>>(new Set());
   const [showMergeDialog, setShowMergeDialog] = useState(false);
 
@@ -167,8 +168,20 @@ export default function GuestsPage() {
 
   const handleDeleteGuest = async () => {
     if (deletingGuest) {
-      await removeGuest(deletingGuest.id);
-      setDeletingGuest(null);
+      try {
+        await removeGuest(deletingGuest.id);
+        setDeletingGuest(null);
+      } catch (error) {
+        if (error instanceof Error && error.message === 'GUEST_HAS_RESERVATIONS') {
+          // Close delete dialog and show reservations warning
+          setDeletingGuest(null);
+          setGuestWithReservations(deletingGuest);
+        } else {
+          // Show generic error
+          console.error('Failed to delete guest:', error);
+          alert('Failed to delete guest. Please try again.');
+        }
+      }
     }
   };
 
@@ -222,8 +235,8 @@ export default function GuestsPage() {
       </div>
 
       {selectedCount > 0 && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg shadow-lg p-6 transition-all duration-300">
-          <p className="text-sm text-blue-800">
+        <div className="bg-card border border-border rounded-lg shadow-lg p-6 transition-all duration-300">
+          <p className="text-sm text-foreground">
             {selectedCount} guest{selectedCount > 1 ? 's' : ''} selected
             {selectedCount === 2 && ' (ready to merge)'}
             {selectedCount > 2 && ' (select exactly 2 to merge)'}
@@ -318,6 +331,36 @@ export default function GuestsPage() {
             </Button>
             <Button variant="destructive" onClick={handleDeleteGuest}>
               Delete
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Guest Has Reservations Dialog */}
+      <Dialog open={!!guestWithReservations} onOpenChange={(open) => !open && setGuestWithReservations(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Cannot Delete Guest</DialogTitle>
+            <DialogDescription>
+              {guestWithReservations?.full_name} cannot be deleted because they have active reservations.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4">
+            <p className="text-sm text-muted-foreground mb-4">
+              To remove this guest, you can:
+            </p>
+            <ul className="list-disc list-inside space-y-2 text-sm text-muted-foreground">
+              <li>Complete their current reservations (check them out), then delete the guest</li>
+              <li>Cancel their pending/confirmed reservations, then delete the guest</li>
+              <li>Use the "Merge Guests" feature to combine this guest with another guest</li>
+            </ul>
+            <p className="text-xs text-muted-foreground mt-4">
+              Note: Guests with only checked-out or cancelled reservations can be deleted.
+            </p>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setGuestWithReservations(null)}>
+              OK
             </Button>
           </DialogFooter>
         </DialogContent>

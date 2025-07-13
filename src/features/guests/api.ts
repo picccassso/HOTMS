@@ -70,3 +70,15 @@ export const searchGuestsByEmail = async (email: string): Promise<Guest[]> => {
   if (error) throw error;
   return data || [];
 };
+
+export const checkGuestHasReservations = async (guestId: string): Promise<boolean> => {
+  const { data, error } = await supabase
+    .from('reservations')
+    .select('id')
+    .eq('guest_id', guestId)
+    .not('status', 'in', '(checked_out,cancelled)')
+    .limit(1);
+  
+  if (error) throw error;
+  return (data || []).length > 0;
+};

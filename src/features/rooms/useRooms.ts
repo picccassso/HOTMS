@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getRooms, createRoom, updateRoom, deleteRoom } from './api';
+import { getRooms, createRoom, updateRoom, deleteRoom, checkRoomHasReservations } from './api';
 import type { Room, RoomCreate, RoomUpdate } from '@/types/schemas';
 
 export const useRooms = () => {
@@ -42,10 +42,19 @@ export const useRooms = () => {
 
   const removeRoom = async (id: string) => {
     try {
+      // Check if room has reservations before attempting deletion
+      const hasReservations = await checkRoomHasReservations(id);
+      if (hasReservations) {
+        throw new Error('ROOM_HAS_RESERVATIONS');
+      }
+      
       await deleteRoom(id);
       setRooms(prev => prev.filter(room => room.id !== id));
     } catch (err) {
-      throw err instanceof Error ? err : new Error('Failed to delete room');
+      if (err instanceof Error) {
+        throw err;
+      }
+      throw new Error('Failed to delete room');
     }
   };
 

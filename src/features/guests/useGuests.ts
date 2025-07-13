@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getGuests, createGuest, updateGuest, deleteGuest, searchGuestsByName, searchGuestsByEmail } from './api';
+import { getGuests, createGuest, updateGuest, deleteGuest, searchGuestsByName, searchGuestsByEmail, checkGuestHasReservations } from './api';
 import type { Guest, GuestCreate, GuestUpdate } from '@/types/schemas';
 
 export const useGuests = () => {
@@ -42,10 +42,19 @@ export const useGuests = () => {
 
   const removeGuest = async (id: string) => {
     try {
+      // Check if guest has reservations before attempting deletion
+      const hasReservations = await checkGuestHasReservations(id);
+      if (hasReservations) {
+        throw new Error('GUEST_HAS_RESERVATIONS');
+      }
+      
       await deleteGuest(id);
       setGuests(prev => prev.filter(guest => guest.id !== id));
     } catch (err) {
-      throw err instanceof Error ? err : new Error('Failed to delete guest');
+      if (err instanceof Error) {
+        throw err;
+      }
+      throw new Error('Failed to delete guest');
     }
   };
 

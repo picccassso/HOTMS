@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { format } from "date-fns";
-import { Calendar, User, MapPin, CreditCard, Plus, AlertCircle, UserCheck, UserX } from "lucide-react";
+import { Calendar, User, CreditCard, Plus, AlertCircle, UserCheck, UserX } from "lucide-react";
 import { usePayments } from "./usePayments";
 import { AddPaymentDialog } from "./AddPaymentDialog";
 import { updateReservation, checkInReservation, checkOutReservation } from "./api";
@@ -161,7 +161,7 @@ export const ReservationDetailsDialog = ({
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="flex items-center justify-between">
+            <DialogTitle className="flex items-center justify-between pr-8">
               <span>Reservation Details</span>
               <Badge className={getStatusColor(reservation.status)}>
                 {reservation.status.replace('_', ' ').toUpperCase()}
@@ -172,11 +172,13 @@ export const ReservationDetailsDialog = ({
           <div className="space-y-6">
             {/* Payment Outstanding Alert */}
             {isPaymentOutstanding && (
-              <div className="flex items-center gap-2 p-3 bg-amber-50 border border-amber-200 rounded-lg">
-                <AlertCircle className="h-5 w-5 text-amber-600" />
-                <div className="flex-1">
-                  <p className="font-medium text-amber-800">Payment Outstanding</p>
-                  <p className="text-sm text-amber-700">
+              <div className="flex items-start gap-3 p-4 bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-300 rounded-xl shadow-sm">
+                <div className="flex-shrink-0">
+                  <AlertCircle className="h-5 w-5 text-blue-600 mt-0.5" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h4 className="font-semibold text-blue-900 mb-1">Payment Outstanding</h4>
+                  <p className="text-sm text-blue-800 leading-relaxed">
                     This reservation requires payment confirmation to be marked as confirmed.
                   </p>
                 </div>
@@ -189,28 +191,39 @@ export const ReservationDetailsDialog = ({
                 <User className="h-4 w-4 text-muted-foreground" />
                 <h3 className="font-semibold">Guest Information</h3>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ml-6">
-                <div>
-                  <p className="text-sm text-muted-foreground">Name</p>
-                  <p className="font-medium">{reservation.guest?.full_name}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Email</p>
-                  <p className="font-medium">{reservation.guest?.email}</p>
-                </div>
-                {reservation.guest?.phone_number && (
+              {reservation.guest ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ml-6">
                   <div>
-                    <p className="text-sm text-muted-foreground">Phone</p>
-                    <p className="font-medium">{reservation.guest.phone_number}</p>
+                    <p className="text-sm text-muted-foreground">Name</p>
+                    <p className="font-medium">{reservation.guest.full_name}</p>
                   </div>
-                )}
-                {reservation.guest?.address && (
                   <div>
-                    <p className="text-sm text-muted-foreground">Address</p>
-                    <p className="font-medium">{reservation.guest.address}</p>
+                    <p className="text-sm text-muted-foreground">Email</p>
+                    <p className="font-medium">{reservation.guest.email}</p>
                   </div>
-                )}
-              </div>
+                  {reservation.guest.phone_number && (
+                    <div>
+                      <p className="text-sm text-muted-foreground">Phone</p>
+                      <p className="font-medium">{reservation.guest.phone_number}</p>
+                    </div>
+                  )}
+                  {reservation.guest.address && (
+                    <div>
+                      <p className="text-sm text-muted-foreground">Address</p>
+                      <p className="font-medium">{reservation.guest.address}</p>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="ml-6">
+                  <div className="flex items-center gap-2 p-3 bg-gray-100 rounded-lg">
+                    <AlertCircle className="h-4 w-4 text-gray-500" />
+                    <p className="text-sm text-gray-600">
+                      Guest information not available (guest account was deleted)
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
 
             <Separator />
@@ -221,19 +234,32 @@ export const ReservationDetailsDialog = ({
                 <Calendar className="h-4 w-4 text-muted-foreground" />
                 <h3 className="font-semibold">Reservation Information</h3>
               </div>
+              {reservation.room ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ml-6">
+                  <div>
+                    <p className="text-sm text-muted-foreground">Room</p>
+                    <p className="font-medium">
+                      Room {reservation.room.room_number} - {reservation.room.room_type}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Rate</p>
+                    <p className="font-medium">
+                      ${reservation.room.rate}/night
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <div className="ml-6">
+                  <div className="flex items-center gap-2 p-3 bg-gray-100 rounded-lg">
+                    <AlertCircle className="h-4 w-4 text-gray-500" />
+                    <p className="text-sm text-gray-600">
+                      Room information not available (room was deleted)
+                    </p>
+                  </div>
+                </div>
+              )}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ml-6">
-                <div>
-                  <p className="text-sm text-muted-foreground">Room</p>
-                  <p className="font-medium">
-                    Room {reservation.room?.room_number} - {reservation.room?.room_type}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Rate</p>
-                  <p className="font-medium">
-                    ${reservation.room?.rate}/night
-                  </p>
-                </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Check-in</p>
                   <p className="font-medium">
@@ -276,7 +302,7 @@ export const ReservationDetailsDialog = ({
                 ) : (
                   <div className="space-y-2">
                     {payments.map((payment) => (
-                      <div key={payment.id} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                      <div key={payment.id} className="flex justify-between items-center p-3 bg-gray-800 rounded-lg">
                         <div>
                           <p className="font-medium">${payment.amount.toFixed(2)}</p>
                           <p className="text-sm text-muted-foreground">
@@ -348,7 +374,7 @@ export const ReservationDetailsDialog = ({
         open={showCheckInConfirm}
         onOpenChange={setShowCheckInConfirm}
         title="Check In Guest"
-        description={`Are you sure you want to check in ${reservation.guest?.full_name}?`}
+        description={`Are you sure you want to check in ${reservation.guest?.full_name || 'this guest'}?`}
         onConfirm={handleCheckIn}
         confirmText="Check In"
         confirmVariant="default"
@@ -360,7 +386,7 @@ export const ReservationDetailsDialog = ({
         open={showCheckOutConfirm}
         onOpenChange={setShowCheckOutConfirm}
         title="Check Out Guest"
-        description={`Are you sure you want to check out ${reservation.guest?.full_name}?`}
+        description={`Are you sure you want to check out ${reservation.guest?.full_name || 'this guest'}?`}
         onConfirm={handleCheckOut}
         confirmText="Check Out"
         confirmVariant="default"
